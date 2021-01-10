@@ -9,23 +9,23 @@
 
 namespace substab{
 
-	struct WarpFunctorData{
-	public:
-		WarpFunctorData(const Eigen::Vector2d& tgt_, const Eigen::Vector4d& w_, const double weight_): tgt(tgt_), w(w_), weight(std::sqrt(weight_)){}
-		template<typename T>
-		bool operator()(const T* const g1, const T* const g2, const T* const g3, const T* const g4, T* residual) const{
-			T x = g1[0] * w[0] + g2[0] * w[1] + g3[0] * w[2] + g4[0] * w[3];
-			T y = g1[1] * w[0] + g2[1] * w[1] + g3[1] * w[2] + g4[1] * w[3];
-			T diffx = x - (T)tgt[0];
-			T diffy = y - (T)tgt[1];
-			residual[0] = weight * ceres::sqrt(diffx * diffx + diffy * diffy);
-			return true;
-		}
-	private:
-		const Eigen::Vector2d tgt;
-		const Eigen::Vector4d w;
-		const double weight;
-	};
+    struct WarpFunctorData{
+    public:
+        WarpFunctorData(const Eigen::Vector2d& tgt_, const Eigen::Vector4d& w_, const double weight_): tgt(tgt_), w(w_), weight(std::sqrt(weight_)){}
+        template<typename T>
+        bool operator()(const T* const g1, const T* const g2, const T* const g3, const T* const g4, T* residual) const{
+            T x = g1[0] * w[0] + g2[0] * w[1] + g3[0] * w[2] + g4[0] * w[3];
+            T y = g1[1] * w[0] + g2[1] * w[1] + g3[1] * w[2] + g4[1] * w[3];
+            T diffx = x - (T)tgt[0];
+            T diffy = y - (T)tgt[1];
+            residual[0] = weight * ceres::sqrt(diffx * diffx + diffy * diffy);
+            return true;
+        }
+    private:
+        const Eigen::Vector2d tgt;
+        const Eigen::Vector4d w;
+        const double weight;
+    };
 
     struct WarpFunctorRegularization{
     public:

@@ -12,16 +12,34 @@
 #include <glog/logging.h>
 
 namespace substab {
-	struct FeatureTracks{
-		std::vector<std::vector<cv::Point2f> > tracks;
-		std::vector<size_t> offset;
-	};
+    struct FeatureTracks{
+        std::vector<std::vector<cv::Point2f> > tracks;
+        std::vector<size_t> offset;
+    };
 
-	namespace Tracking {
-		void genTrackMatrix(const std::vector<cv::Mat>& images, FeatureTracks& trackMatrix, const int tWindow, const int stride);
-		void filterDynamicTracks(FeatureTracks& trackMatrix, const int N);
+    struct KLTSetting {
+        double quality_level;
+        double min_distance;
+        int winSizePyramid;
+        int nLevel;
+    };
 
-		void visualizeTrack(const std::vector<cv::Mat>& images, const FeatureTracks& trackMatrix, const int startFrame);
-	}
+    struct OpticalFlowSetting {
+        double max_diff_distance;
+        int max_corners;
+        int interval;
+    };
+
+    struct TrackingSetting {
+        struct KLTSetting kltSetting;
+        struct OpticalFlowSetting ofSetting;
+    };
+
+    namespace Tracking {
+        void genTrackMatrix(const std::vector<cv::Mat>& images, FeatureTracks& trackMatrix, const int tWindow, const int stride, const TrackingSetting &trackSetting);
+        void filterDynamicTracks(FeatureTracks& trackMatrix, const int N);
+
+        void visualizeTrack(const std::vector<cv::Mat>& images, const FeatureTracks& trackMatrix, const int startFrame);
+    }
 }
 #endif //SUBSPACESTAB_TRACKING_H

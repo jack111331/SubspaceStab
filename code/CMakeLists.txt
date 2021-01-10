@@ -22,4 +22,4 @@ endif()
 
 add_executable(SubspaceStab main.cpp tracking.h tracking.cpp factorization.cpp factorization.h warping.h warping.cpp gridenergy.h utility.h utility.cpp thread_guard.h)
 
-target_link_libraries(SubspaceStab ${OpenCV_LIBS} glog gflags spqr cholmod)
+target_link_libraries(SubspaceStab ${OpenCV_LIBS} ${VTK_LIBRARIES} glog gflags spqr cholmod)
