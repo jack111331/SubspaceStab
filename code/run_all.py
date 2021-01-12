@@ -8,7 +8,7 @@ datasets = ['02_Rotation']
 #double min_distance;
 #double max_diff_distance;
 
-dof = { "quality_level" : (0.06, 0.1, 0.01),
+dof = { "quality_level" : (0.01, 0.1, 0.01),
         "min_distance" : (1, 5, 1),
         "max_diff_distance" : (0.5, 2.0, 0.5)
         }

@@ -119,6 +119,7 @@ int main(int argc, char** argv){
     auto threadFunWarp = [&](int threadId) {
         for (auto v = threadId; v < images.size() - FLAGS_tWindow; v += num_thread) {
             vector<Vector2d> pts1, pts2;
+            vector<Point2f> pts1_array, pts2_array;
             for (auto tid = 0; tid < trackMatrix.offset.size(); ++tid) {
                 const int offset = (int) trackMatrix.offset[tid];
                 if(wMatrix[tid][v] != 1)
@@ -126,11 +127,16 @@ int main(int argc, char** argv){
                 if (trackMatrix.offset[tid] <= v && offset + trackMatrix.tracks.size() >= v && wMatrix[tid][v]) {
                     pts1.push_back(Vector2d(reconOri(2 * tid, v), reconOri(2 * tid + 1, v)));
                     pts2.push_back(Vector2d(reconSmo(2 * tid, v), reconSmo(2 * tid + 1, v)));
+                    pts1_array.push_back(Point2f(reconOri(2 * tid, v), reconOri(2 * tid + 1, v)));
+                    pts2_array.push_back(Point2f(reconSmo(2 * tid, v), reconSmo(2 * tid + 1, v)));
                 }
             }
 //			printf("Frame %d on thread %d\n", v, threadId);
 //			printf("number of constraints: %d\n", (int) pts1.size());
-            warping.warpImageCloseForm(images[v], warped[v], pts1, pts2,v);
+// we use full frame warping
+            auto affineMat = cv::estimateAffine2D(pts1_array, pts2_array);
+            cv::warpAffine(images[v], warped[v], affineMat, cv::Size(images[0].cols, images[0].rows));
+//            warping.warpImageCloseForm(images[v], warped[v], pts1, pts2,v);
             if(FLAGS_draw_points) {
                 for (auto ftid = 0; ftid < pts2.size(); ++ftid)
                     cv::circle(warped[v], cv::Point2d(pts2[ftid][0], pts2[ftid][1]), 1, Scalar(0, 0, 255), 2);
